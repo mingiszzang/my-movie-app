@@ -61,7 +61,7 @@ def load_boxoffice_data(api_key: str, target_date: str) -> pd.DataFrame:
 
     try:
         # 응답이 지나치게 오래 걸리지 않도록 제한 시간을 설정합니다.
-        response = requests.get(api_url, params=params, timeout=15)
+        response = requests.get(api_url, params=params, timeout=60)
 
         # 400, 500 등의 HTTP 오류가 발생하면 예외를 발생시킵니다.
         response.raise_for_status()
