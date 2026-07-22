@@ -268,10 +268,10 @@ import plotly.express as px
 
 st.markdown("### 📊 관객수 상위 5편")
 
-# 관객수 기준 상위 5편
 top5 = (
     df.nlargest(5, "audiCnt")
     .sort_values("audiCnt", ascending=False)
+    .copy()
 )
 
 fig = px.bar(
@@ -282,23 +282,60 @@ fig = px.bar(
     text="audiCnt",
 )
 
-# 1위가 위에 오도록
-fig.update_yaxes(autorange="reversed")
+# 1위가 가장 위에 오도록 설정
+fig.update_yaxes(
+    autorange="reversed",
+    title="",
+)
 
-# 숫자를 천 단위 콤마로 표시
 fig.update_traces(
+    # 숫자를 천 단위 쉼표로 표시
     texttemplate="%{text:,}",
-    textposition="outside",
+
+    # 숫자를 막대 안쪽 끝에 표시해서 잘리지 않게 함
+    textposition="inside",
+    insidetextanchor="end",
+
+    # 막대 사이 간격을 크게 만들어 막대를 얇게 보이게 함
+    width=0.5,
+
+    # 마우스를 올렸을 때 표시되는 내용
+    hovertemplate=(
+        "<b>%{y}</b><br>"
+        "관객수: %{x:,}명"
+        "<extra></extra>"
+    ),
 )
 
 fig.update_layout(
-    height=420,
+    height=390,
     xaxis_title="관객수",
     yaxis_title="",
-    margin=dict(l=180, r=40, t=20, b=20),  # ← 긴 영화명 때문에 왼쪽 여백을 크게
+
+    # 막대 사이 간격
+    bargap=0.4,
+
+    # 영화명과 그래프 양쪽 여백
+    margin=dict(l=170, r=40, t=10, b=40),
+
+    # 막대 안쪽 숫자가 잘리지 않도록 허용
+    uniformtext_minsize=11,
+    uniformtext_mode="show",
+
+    showlegend=False,
 )
 
-st.plotly_chart(fig, use_container_width=True)
+# x축 숫자도 쉼표 형식으로 표시
+fig.update_xaxes(
+    tickformat=",",
+    rangemode="tozero",
+)
+
+st.plotly_chart(
+    fig,
+    use_container_width=True,
+    config={"displayModeBar": False},
+)
 
 
 # ---------------------------------------------------------
