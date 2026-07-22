@@ -264,24 +264,41 @@ with metric_col3:
 # ---------------------------------------------------------
 # 8. 관객수 상위 5편 막대그래프
 # ---------------------------------------------------------
+import plotly.express as px
+
 st.markdown("### 📊 관객수 상위 5편")
 
-# 숫자로 변환한 audiCnt를 기준으로 내림차순 정렬합니다.
+# 관객수 기준 상위 5편
 top5 = (
     df.nlargest(5, "audiCnt")
-    .sort_values("audiCnt", ascending=True)
-    .copy()
+    .sort_values("audiCnt", ascending=False)
 )
 
-# 영화명을 그래프의 세로축으로 사용합니다.
-chart_data = top5.set_index("movieNm")[["audiCnt"]]
-chart_data.columns = ["관객수"]
-
-st.bar_chart(
-    chart_data,
-    horizontal=True,
-    use_container_width=True,
+fig = px.bar(
+    top5,
+    x="audiCnt",
+    y="movieNm",
+    orientation="h",
+    text="audiCnt",
 )
+
+# 1위가 위에 오도록
+fig.update_yaxes(autorange="reversed")
+
+# 숫자를 천 단위 콤마로 표시
+fig.update_traces(
+    texttemplate="%{text:,}",
+    textposition="outside",
+)
+
+fig.update_layout(
+    height=420,
+    xaxis_title="관객수",
+    yaxis_title="",
+    margin=dict(l=180, r=40, t=20, b=20),  # ← 긴 영화명 때문에 왼쪽 여백을 크게
+)
+
+st.plotly_chart(fig, use_container_width=True)
 
 
 # ---------------------------------------------------------
