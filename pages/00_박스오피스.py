@@ -225,43 +225,37 @@ first_movie = df.iloc[0]
 
 st.markdown("### 🥇 박스오피스 1위")
 
-metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(
-    [2.2, 1, 1, 1]
+# 1위 영화명은 한 줄 전체를 사용합니다.
+if first_movie["rankInten"] > 0:
+    rank_delta = f"순위 {first_movie['rankInten']}계단 상승"
+elif first_movie["rankInten"] < 0:
+    rank_delta = f"순위 {abs(first_movie['rankInten'])}계단 하락"
+else:
+    rank_delta = "순위 변동 없음"
+
+st.metric(
+    label="1위 영화",
+    value=first_movie["영화명"],
+    delta=rank_delta,
+    delta_color="normal" if first_movie["rankInten"] >= 0 else "inverse",
 )
 
-with metric_col1:
-    st.metric(
-        label="1위 영화",
-        value=first_movie["영화명"],
-        delta=(
-            f"순위 {first_movie['rankInten']}계단 상승"
-            if first_movie["rankInten"] > 0
-            else (
-                f"순위 {abs(first_movie['rankInten'])}계단 하락"
-                if first_movie["rankInten"] < 0
-                else "순위 변동 없음"
-            )
-        ),
-        delta_color=(
-            "normal"
-            if first_movie["rankInten"] >= 0
-            else "inverse"
-        ),
-    )
+# 숫자 지표는 아래쪽 3개 열에 넓게 배치합니다.
+metric_col1, metric_col2, metric_col3 = st.columns(3)
 
-with metric_col2:
+with metric_col1:
     st.metric(
         label="어제 관객수",
         value=f"{first_movie['audiCnt']:,}명",
     )
 
-with metric_col3:
+with metric_col2:
     st.metric(
         label="누적 관객수",
         value=f"{first_movie['audiAcc']:,}명",
     )
 
-with metric_col4:
+with metric_col3:
     st.metric(
         label="스크린수",
         value=f"{first_movie['scrnCnt']:,}개",
