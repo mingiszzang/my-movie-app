@@ -182,22 +182,21 @@ st.subheader(f"📅 {display_date} 박스오피스")
 # ---------------------------------------------------------
 # 6. 순위 변동 표시 만들기
 # ---------------------------------------------------------
-def make_rank_display(row) -> str:
-    """
-    rankInten이 양수이면 순위 상승,
-    음수이면 순위 하락으로 표시합니다.
-    """
+def make_rank_display(row):
 
     rank = int(row["rank"])
-    rank_change = int(row["rankInten"])
+    inten = int(row["rankInten"])
 
-    if rank_change > 0:
-        return f"{rank}위 🔴 ↑{rank_change}"
+    if inten > 0:
+        mark = f"🔺 {inten}"
 
-    if rank_change < 0:
-        return f"{rank}위 🔵 ↓{abs(rank_change)}"
+    elif inten < 0:
+        mark = f"🔻 {abs(inten)}"
 
-    return f"{rank}위 ·"
+    else:
+        mark = "➖"
+
+    return f"{rank}위   {mark}"
 
 
 def make_movie_name(row) -> str:
